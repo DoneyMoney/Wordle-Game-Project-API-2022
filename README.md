@@ -31,14 +31,13 @@ This project is implemented in C11 using only the standard C libraries.
 
 In my solution, I used a BST with a list. I save each word, as they are entered, in a node. I use the list to scroll through only the words that respect the constraints. After each attempt, if I learn new constraints, I throw out the words that do not respect them.
 
-\begin{verbatim}
+```c
 typedef struct node_{
     struct node_* left;
     struct node_* right;
     struct node_* next;
     char* key;
 }node_t;
-\end{verbatim}
 
 # Tools used
 Valgrind;
