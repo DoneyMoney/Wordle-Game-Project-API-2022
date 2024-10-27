@@ -1,5 +1,6 @@
 # Wordle-Game-Project-API-2022
 This project is the final test of the "Algoritmi e Principi dell'Informatica" course at the Polytechnic of Milan, A.Y. 2021/22.
+
 Evaluation: 30 / 30
 
 - [Project Description](#project-description)
@@ -42,12 +43,13 @@ This project is implemented in C11 using only the [standard C libraries](https:/
 In my solution, I used a BST with a list. I save each word, as they are entered, in a node. I use the list to scroll through only the words that respect the constraints. After each attempt, if I learn new constraints, I throw out the words that do not respect them.
 
 ```c
-typedef struct node_{
-    struct node_* left;
-    struct node_* right;
-    struct node_* next;
-    char* key;
-}node_t;
+typedef struct tagTree{
+    char *key;
+    struct tagTree *padre;
+    struct tagTree  *left;
+    struct tagTree *right;
+    struct tagTree  *next;
+}tree;
 ```
 
 ## Tools used
@@ -60,3 +62,68 @@ typedef struct node_{
 
 ## Software used
 - Clion.
+
+## Example
+```html
+> 5
+> 8adfs
+> 5sjaH
+> KS06l
+> Hi23a
+> laj74
+> -s9k0
+> sm_ks
+> okauE
+> +nuova_partita
+> 5sjaH
+> 4
+> KS06l
+/////
+5
+> had7s
+not_exists
+> okauE
+//|//
+3
+> +stampa_filtrate
+5sjaH
+8adfs
+Hi23a
+> +inserisci_inizio
+> PsjW5
+> asHdd
+> paF7s
+> +inserisci_fine
+> -s9k0
+/+///
+2
+> sghks
+not_exists
+> +stampa_filtrate
+5sjaH
+asHdd
+> sm_ks
+|////
+2
+ko
+> +inserisci_inizio
+> _fah-
+> 0D7dj
+> +inserisci_fine
+> +nuova_partita
+> okauE
+> 3
+> laj74
+/|///
+4
+> +stampa_filtrate
+Hi23a
+_fah-
+asHdd
+okauE
+> sm_ks
+///|/
+1
+> okauE
+ok
+```
