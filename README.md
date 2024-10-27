@@ -38,6 +38,7 @@ typedef struct node_{
     struct node_* next;
     char* key;
 }node_t;
+```
 
 # Tools used
 Valgrind;
