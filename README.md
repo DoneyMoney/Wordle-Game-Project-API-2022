@@ -1,129 +1,54 @@
-# Wordle-Game-Project-API-2022
-This project is the final test of the "Algoritmi e Principi dell'Informatica" course at the Polytechnic of Milan, A.Y. 2021/22.
+# Wordle Game Project - API 2022
 
-Evaluation: 30 / 30
+This repository contains the final individual project for the **"Algorithms and Principles of Computer Science" (API)** course at **Politecnico di Milano** (A.Y. 2021/2022). 
 
-- [Project Description](#project-description)
-- [How to play](#how-to-play)
-- [Implementations](#implementations)
-- [Tools Used](#tools-used)
-- [Software Used](#software-used)
-- [Example](#example)
+**Final Grade: 30 / 30**
 
-## Project Description
-The aim of this project is to apply the knowledge acquired during the course to recreate in C Wordle, a game whose objective is to guess a word through several attempts. The project is evaluated on memory efficiency and speed.
+---
 
-The project, in detail, consists of the realisation of a system that checks the correspondence between the letters of two words of equal length.
+## 🎮 Game Explanation
+The system implements a game inspired by **Wordle**, where the objective is to guess a secret word of length $k$ through a series of attempts. After each attempt, the system provides feedback for each character using specific symbols:
 
-In each game, there is a word to be guessed. After each attempt, a sequence of symbols (composed of +, | or /) is printed, which gives us information about each character in the attempt. In the symbol sequence there is + if the character in the corresponding position of the attempt is in the correct position, there is | if that character is present in the word to be guessed but in the wrong position, / if that character is not present at all in the word to be guessed.
+* **`+` (Correct)**: The character is in the correct position.
+* **`|` (Misplaced)**: The character is present in the secret word but in a different position.
+* **`/` (Absent)**: The character is not present in the secret word.
 
-## How to Play
-Once started, the system reads from standard input:
-- a k value indicating the length of the words
-- a sequence (of arbitrary length) of words, each with length k, constituting the set of admissible words
+The challenge lies in efficiently filtering the dictionary of admissible words to identify those that remain "compatible" with the constraints learned from previous attempts.
 
-After this, a sequence of matches is read, each starting with the `+nuova_partita` command.
-The input of a match consists of:
-- the word to be guessed (long k)
-- maximum number n of attempts
-- sequence of attempts (each long k)
+---
 
-During a game (between attempts) the `+stampa_filtrate` command may appear, this consists of printing in lexicographic order all the words compatible with the constraints learnt from the various attempts.
+## 🚀 Technical Implementation
+The project is implemented in **C11** using only standard libraries to ensure maximum performance and low-level control over memory.
 
-Both during and between games, the commands `+inserisci_inizio` and `+inserisci_fine` may appear. Between these commands there is a sequence of new words, which are added to the set of permissible words.
+### Hybrid Data Structure: BST + Linked List
+To handle tens of thousands of words under strict time and memory constraints (128MB), a custom hybrid data structure was designed:
 
-A game ends if the word is guessed after which it is printed ok, or if the last attempt is also wrong after which it is printed ko.
+* **Binary Search Tree (BST)**: Every word in the dictionary is stored in a BST node to allow efficient lexicographical sorting and searching.
+* **Dynamic Linked List**: Each node contains a `next` pointer used to maintain a list of words that are currently compatible with the game's constraints.
+* **Optimized Pruning**: Instead of re-scanning the entire dictionary, the system traverses the linked list and removes incompatible nodes as new constraints are discovered, significantly reducing the search space.
 
-For full explanation see [pdf](/doc/Tema%20ENG.pdf) (also available in [Italian](/doc/Tema%20ITA.pdf)).
-
-
-## Implementations
-This project is implemented in C11 using only the [standard C libraries](https://en.wikipedia.org/wiki/C_standard_library).
-
-In my solution, I used a BST with a list. I save each word, as they are entered, in a node. I use the list to scroll through only the words that respect the constraints. After each attempt, if I learn new constraints, I throw out the words that do not respect them.
-
+### Data Structure Snippet
 ```c
-typedef struct tagTree{
-    char *key;
+typedef struct tagTree {
+    char *key;           // The word string
     struct tagTree *padre;
-    struct tagTree  *left;
+    struct tagTree *left;
     struct tagTree *right;
-    struct tagTree  *next;
-}tree;
+    struct tagTree *next; // Pointer to the next compatible word in the list
+} tree;
 ```
 
-## Tools used
-- Valgrind;
-- Callgrind;
-- Massif-Visualizer;
-- Address-Sanitizer;
-- GDB;
-- GCC.
+## 🛠 Supported Commands
+The system processes a stream of commands from standard input to manage matches and dictionary updates:
 
-## Software used
-- Clion.
+* **`+nuova_partita`**: Starts a new match by reading the secret word and the maximum number of attempts.
+* **`+stampa_filtrate`**: Outputs all words currently compatible with the learned constraints, sorted lexicographically.
+* **`+inserisci_inizio` / `+inserisci_fine`**: Allows for dynamic dictionary expansion, adding new admissible words even during an active match.
 
-## Example
-```html
-> 5
-> 8adfs
-> 5sjaH
-> KS06l
-> Hi23a
-> laj74
-> -s9k0
-> sm_ks
-> okauE
-> +nuova_partita
-> 5sjaH
-> 4
-> KS06l
-/////
-5
-> had7s
-not_exists
-> okauE
-//|//
-3
-> +stampa_filtrate
-5sjaH
-8adfs
-Hi23a
-> +inserisci_inizio
-> PsjW5
-> asHdd
-> paF7s
-> +inserisci_fine
-> -s9k0
-/+///
-2
-> sghks
-not_exists
-> +stampa_filtrate
-5sjaH
-asHdd
-> sm_ks
-|////
-2
-ko
-> +inserisci_inizio
-> _fah-
-> 0D7dj
-> +inserisci_fine
-> +nuova_partita
-> okauE
-> 3
-> laj74
-/|///
-4
-> +stampa_filtrate
-Hi23a
-_fah-
-asHdd
-okauE
-> sm_ks
-///|/
-1
-> okauE
-ok
-```
+## 📊 Development & Profiling Tools
+The implementation was rigorously profiled to ensure zero memory leaks and optimal execution time under strict constraints:
+
+* **Memory Integrity**: Valgrind, Address-Sanitizer (ASan).
+* **Performance Profiling**: Callgrind, Massif-Visualizer.
+* **Debugging & Compilation**: GDB, GCC.
+* **IDE**: CLion.
